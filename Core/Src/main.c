@@ -110,8 +110,8 @@ int main(void)
   MX_USART2_UART_Init();
   MX_CAN_Init();
   /* USER CODE BEGIN 2 */
-  uint32_t fid = 0x200;               // 0b 0010 0000 0000 (12ビットだけど先頭が0なので11ビットとして扱える的な).
-  uint32_t fmask = 0x7F0 ;            // 0b 0111 1111 0000 (１2ビット).
+  uint32_t fid = 0x200;               // 0b 010 0000 0000 (32ビットだけど先頭が0なので11ビットとして扱える的な).
+  uint32_t fmask = 0x7F0 ;            // 0b 111 1111 0000
   filter.FilterIdHigh = fid << 5;     // 0b 0100 0000 0000 0000
   filter.FilterIdLow = 0;             // 0b 0000 0000 0000 0000
   filter.FilterMaskIdHigh = fmask<<5; // 0b 1111 1110 0000 0000
