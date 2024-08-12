@@ -18,7 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
+#include <stdio.h>
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -110,10 +110,10 @@ int main(void)
   MX_USART2_UART_Init();
   MX_CAN_Init();
   /* USER CODE BEGIN 2 */
-  filter.FilterIdHigh = 0;
-  filter.FilterIdLow = 0;
-  filter.FilterMaskIdHigh = 0;
-  filter.FilterMaskIdLow = 0;
+  filter.FilterIdHigh = 0x02;
+  filter.FilterIdLow = 0x00;
+  filter.FilterMaskIdHigh = 0xFF;
+  filter.FilterMaskIdLow = 0xF0;
   filter.FilterScale = CAN_FILTERSCALE_32BIT;
   filter.FilterFIFOAssignment = CAN_FILTER_FIFO0;
   filter.FilterBank = 0;
@@ -124,6 +124,7 @@ int main(void)
 
   HAL_CAN_Start(&hcan);
   HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING);
+  setbuf(stdout, NULL);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -136,17 +137,85 @@ int main(void)
 		  TxHeader.IDE = CAN_ID_STD;
 		  TxHeader.DLC = 8;
 		  TxHeader.TransmitGlobalTime = DISABLE;
-		  TxData[0] = 0x001;
-		  TxData[1] = 0x001;
-		  TxData[2] = 0x001;
-		  TxData[3] = 0x01;
-		  TxData[4] = 0x01;
-		  TxData[5] = 0x01;
+		  TxData[0] = 0x1;
+		  TxData[1] = 0x1;
+		  TxData[2] = 0x1;
+		  TxData[3] = 0x1;
+		  TxData[4] = 0x1;
+		  TxData[5] = 0x1;
 		  TxData[6] = 0x1;
 		  TxData[7] = 0x1;
-
 		  HAL_CAN_AddTxMessage(&hcan,&TxHeader,TxData,&TxMailbox);
 	  }
+
+	  if(0<HAL_CAN_GetTxMailboxesFreeLevel(&hcan)){
+	  		  TxHeader.StdId = 0x202;
+	  		  TxHeader.RTR = CAN_RTR_DATA;
+	  		  TxHeader.IDE = CAN_ID_STD;
+	  		  TxHeader.DLC = 8;
+	  		  TxHeader.TransmitGlobalTime = DISABLE;
+	  		  TxData[0] = 0x2;
+	  		  TxData[1] = 0x2;
+	  		  TxData[2] = 0x2;
+	  		  TxData[3] = 0x2;
+	  		  TxData[4] = 0x2;
+	  		  TxData[5] = 0x2;
+	  		  TxData[6] = 0x2;
+	  		  TxData[7] = 0x2;
+	  		  HAL_CAN_AddTxMessage(&hcan,&TxHeader,TxData,&TxMailbox);
+	  	  }
+
+	  if(0<HAL_CAN_GetTxMailboxesFreeLevel(&hcan)){
+	  		  TxHeader.StdId = 0x203;
+	  		  TxHeader.RTR = CAN_RTR_DATA;
+	  		  TxHeader.IDE = CAN_ID_STD;
+	  		  TxHeader.DLC = 8;
+	  		  TxHeader.TransmitGlobalTime = DISABLE;
+	  		  TxData[0] = 0x3;
+	  		  TxData[1] = 0x3;
+	  		  TxData[2] = 0x3;
+	  		  TxData[3] = 0x3;
+	  		  TxData[4] = 0x3;
+	  		  TxData[5] = 0x3;
+	  		  TxData[6] = 0x3;
+	  		  TxData[7] = 0x3;
+	  		  HAL_CAN_AddTxMessage(&hcan,&TxHeader,TxData,&TxMailbox);
+	  	  }
+
+//	  if(0<HAL_CAN_GetTxMailboxesFreeLevel(&hcan)){
+//	  		  TxHeader.StdId = 0x204;
+//	  		  TxHeader.RTR = CAN_RTR_DATA;
+//	  		  TxHeader.IDE = CAN_ID_STD;
+//	  		  TxHeader.DLC = 8;
+//	  		  TxHeader.TransmitGlobalTime = DISABLE;
+//	  		  TxData[0] = 0x4;
+//	  		  TxData[1] = 0x4;
+//	  		  TxData[2] = 0x4;
+//	  		  TxData[3] = 0x4;
+//	  		  TxData[4] = 0x4;
+//	  		  TxData[5] = 0x4;
+//	  		  TxData[6] = 0x4;
+//	  		  TxData[7] = 0x4;
+//	  		  HAL_CAN_AddTxMessage(&hcan,&TxHeader,TxData,&TxMailbox);
+//	  	  }
+//
+//	  if(0<HAL_CAN_GetTxMailboxesFreeLevel(&hcan)){
+//	  		  TxHeader.StdId = 0x205;
+//	  		  TxHeader.RTR = CAN_RTR_DATA;
+//	  		  TxHeader.IDE = CAN_ID_STD;
+//	  		  TxHeader.DLC = 8;
+//	  		  TxHeader.TransmitGlobalTime = DISABLE;
+//	  		  TxData[0] = 0x5;
+//	  		  TxData[1] = 0x5;
+//	  		  TxData[2] = 0x5;
+//	  		  TxData[3] = 0x5;
+//	  		  TxData[4] = 0x5;
+//	  		  TxData[5] = 0x5;
+//	  		  TxData[6] = 0x5;
+//	  		  TxData[7] = 0x5;
+//	  		  HAL_CAN_AddTxMessage(&hcan,&TxHeader,TxData,&TxMailbox);
+//	  	  }
+//	  printf("%d,%d,%d,%d,%d,%d,%d,%d",data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -243,7 +312,7 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 38400;
+  huart2.Init.BaudRate = 9600;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;
