@@ -103,10 +103,13 @@ int main(void)
   HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING);
 
   CAN_FilterTypeDef filter;
-  filter.FilterIdHigh = 0;
-  filter.FilterIdLow = 0;
-  filter.FilterMaskIdHigh = 0;
-  filter.FilterIdLow = 0;
+
+  uint32_t fid = 0x100; // 0b 0000 0001 0000 0000
+  uint32_t fmask = 0x7FC;
+  filter.FilterIdHigh = fid << 5; // 0b 1000 0000 0000 0000
+  filter.FilterIdLow = 0; // 0b 0000 0000 0000 0000
+  filter.FilterMaskIdHigh = fmask << 5; // 0b 1111 1110 0000 0000;
+  filter.FilterIdLow = 0; // 0b 0000 0000 0000 0000
   filter.FilterScale = CAN_FILTERSCALE_32BIT;
   filter.FilterFIFOAssignment = CAN_FILTER_FIFO0;
   filter.FilterBank = 0;
@@ -127,7 +130,7 @@ int main(void)
 
 	  for(int i = 0; i<4; i++){
 		  if(0<HAL_CAN_GetTxMailboxesFreeLevel(&hcan)){
-			  TxHeader.StdId = 0x200 + i;
+			  TxHeader.StdId = 0x100 + i;
 			  TxHeader.RTR = CAN_RTR_DATA;
 			  TxHeader.IDE = CAN_ID_STD;
 			  TxHeader.DLC = 8;
@@ -138,6 +141,20 @@ int main(void)
 			  HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox);
 		  }
 	  }
+
+//	  for(int i = 0; i<4; i++){
+//		  if(0<HAL_CAN_GetTxMailboxesFreeLevel(&hcan)){
+//			  TxHeader.StdId = 0x500 + i;
+//			  TxHeader.RTR = CAN_RTR_DATA;
+//			  TxHeader.IDE = CAN_ID_STD;
+//			  TxHeader.DLC = 8;
+//			  TxHeader.TransmitGlobalTime = DISABLE;
+//
+//			  Data_1[i] = 0x00 + i;
+//			  memcpy(&TxData[0], &Data_1[i], sizeof(uint8_t));
+//			  HAL_CAN_AddTxMessage(&hcan, &TxHeader, TxData, &TxMailbox);
+//		  }
+//	  }
 
     /* USER CODE BEGIN 3 */
   }
