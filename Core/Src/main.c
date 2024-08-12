@@ -110,9 +110,9 @@ int main(void)
   MX_USART2_UART_Init();
   MX_CAN_Init();
   /* USER CODE BEGIN 2 */
-  uint32_t fid = 0x0200;
-  uint32_t fmask = 0xFFF0;
-  filter.FilterIdHigh = 0x02;
+  uint32_t fid = 0x200;//0b 010 0000 0000  11ビット.
+  uint32_t fmask = 0x7F0 ;//0b 111 1111 0000 １１ビット.
+  filter.FilterIdHigh = fid << 5;
   filter.FilterIdLow = 0x00;
   filter.FilterMaskIdHigh = 0xFF;
   filter.FilterMaskIdLow = 0xF0;
@@ -134,7 +134,7 @@ int main(void)
   while (1)
   {
 	  if(0<HAL_CAN_GetTxMailboxesFreeLevel(&hcan)){
-		  TxHeader.StdId = 0x0201;
+		  TxHeader.StdId = 0x201;
 		  TxHeader.RTR = CAN_RTR_DATA;
 		  TxHeader.IDE = CAN_ID_STD;
 		  TxHeader.DLC = 8;
@@ -151,7 +151,7 @@ int main(void)
 	  }
 
 	  if(0<HAL_CAN_GetTxMailboxesFreeLevel(&hcan)){
-		  TxHeader.StdId = 0x0202;
+		  TxHeader.StdId = 0x202;
 		  TxHeader.RTR = CAN_RTR_DATA;
 		  TxHeader.IDE = CAN_ID_STD;
 		  TxHeader.DLC = 8;
@@ -168,7 +168,7 @@ int main(void)
 	  	  }
 
 	  if(0<HAL_CAN_GetTxMailboxesFreeLevel(&hcan)){
-		  TxHeader.StdId = 0x0203;
+		  TxHeader.StdId = 0x203;
 		  TxHeader.RTR = CAN_RTR_DATA;
 		  TxHeader.IDE = CAN_ID_STD;
 		  TxHeader.DLC = 8;
