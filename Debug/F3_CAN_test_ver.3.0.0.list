@@ -270,9 +270,9 @@ int main(void)
  80002e0:	4603      	mov	r3, r0
  80002e2:	2b00      	cmp	r3, #0
  80002e4:	d02d      	beq.n	8000342 <main+0x102>
-		  TxHeader.StdId = 0x201;
+		  TxHeader.StdId = 0x401;
  80002e6:	4b4e      	ldr	r3, [pc, #312]	@ (8000420 <main+0x1e0>)
- 80002e8:	f240 2201 	movw	r2, #513	@ 0x201
+ 80002e8:	f240 4201 	movw	r2, #1025	@ 0x401
  80002ec:	601a      	str	r2, [r3, #0]
 		  TxHeader.RTR = CAN_RTR_DATA;
  80002ee:	4b4c      	ldr	r3, [pc, #304]	@ (8000420 <main+0x1e0>)
