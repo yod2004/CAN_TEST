@@ -26,7 +26,8 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+CAN_TxHeaderTypeDef TxHeader;
+CAN_FilterTypeDef filter;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -45,7 +46,11 @@ CAN_HandleTypeDef hcan;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-
+uint32_t TxMailbox;
+uint8_t TxData[8];
+uint32_t id;
+uint32_t dlc;
+uint8_t data[8];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -55,6 +60,17 @@ static void MX_USART2_UART_Init(void);
 static void MX_CAN_Init(void);
 /* USER CODE BEGIN PFP */
 
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan){
+	CAN_RxHeaderTypeDef RxHeader;
+	uint8_t RxData[8];
+	if(HAL_CAN_GetRxMessage(hcan,CAN_RX_FIFO0,&RxHeader,RxData)==HAL_OK){
+		id  = (RxHeader.IDE == CAN_ID_STD)? RxHeader.StdId : RxHeader.ExtId;
+		dlc = RxHeader.DLC;
+		for(uint8_t i = 0 ; i < 8 ; i ++ ){
+			data[i] = RxData[i];
+		}
+	}
+}
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -94,13 +110,43 @@ int main(void)
   MX_USART2_UART_Init();
   MX_CAN_Init();
   /* USER CODE BEGIN 2 */
-HAL_CAN_Start(&hcan);
+  filter.FilterIdHigh = 0;
+  filter.FilterIdLow = 0;
+  filter.FilterMaskIdHigh = 0;
+  filter.FilterMaskIdLow = 0;
+  filter.FilterScale = CAN_FILTERSCALE_32BIT;
+  filter.FilterFIFOAssignment = CAN_FILTER_FIFO0;
+  filter.FilterBank = 0;
+  filter.FilterMode = CAN_FILTERMODE_IDMASK;
+  filter.SlaveStartFilterBank = 14;
+  filter.FilterActivation = ENABLE;
+  HAL_CAN_ConfigFilter(&hcan,&filter);
+
+  HAL_CAN_Start(&hcan);
+  HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  if(0<HAL_CAN_GetTxMailboxesFreeLevel(&hcan)){
+		  TxHeader.StdId = 0x201;
+		  TxHeader.RTR = CAN_RTR_DATA;
+		  TxHeader.IDE = CAN_ID_STD;
+		  TxHeader.DLC = 8;
+		  TxHeader.TransmitGlobalTime = DISABLE;
+		  TxData[0] = 0x001;
+		  TxData[1] = 0x001;
+		  TxData[2] = 0x001;
+		  TxData[3] = 0x01;
+		  TxData[4] = 0x01;
+		  TxData[5] = 0x01;
+		  TxData[6] = 0x1;
+		  TxData[7] = 0x1;
+
+		  HAL_CAN_AddTxMessage(&hcan,&TxHeader,TxData,&TxMailbox);
+	  }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
